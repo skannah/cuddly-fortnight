@@ -1,0 +1,46 @@
+pragma solidity ^0.7.0;
+
+contract Lease {
+    // Address of the landlord
+    address public landlord;
+    
+    // Address of the tenant
+    address public tenant;
+    
+    // Rent amount in wei
+    uint public rentAmount;
+    
+    // Rent due date
+    uint public rentDueDate;
+    
+    // Lease start date
+    uint public leaseStartDate;
+    
+    // Lease end date
+    uint public leaseEndDate;
+    
+    // Constructor to initialize the contract
+    constructor(address _landlord, address _tenant, uint _rentAmount, uint _rentDueDate, uint _leaseStartDate, uint _leaseEndDate) public {
+        landlord = _landlord;
+        tenant = _tenant;
+        rentAmount = _rentAmount;
+        rentDueDate = _rentDueDate;
+        leaseStartDate = _leaseStartDate;
+        leaseEndDate = _leaseEndDate;
+    }
+    
+    // Function to pay rent
+    function payRent() public {
+        require(msg.sender == tenant, "Only the tenant can pay rent");
+        require(now >= rentDueDate, "Rent is not yet due");
+        
+        landlord.transfer(rentAmount);
+    }
+    
+    // Function to terminate the lease
+    function terminateLease() public {
+        require(now >= leaseEndDate, "Lease has not yet ended");
+        
+        delete this;
+    }
+}
